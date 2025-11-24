@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Osobní dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="dashboard" class="grid"></main>
+
+  <script>
+    // seznam widgetů, které chceme načíst
+    // každý widget může mít konfiguraci: { name: 'název', width: 'full'|'half'|'third' }
+    // nebo jednoduše string pro výchozí šířku
+    const widgets = [
+      { name: 'ahoj', width: 'half' },
+      { name: 'ahoj', width: 'half' },
+      { name: 'header', width: 'full' }
+    ];
+
+    async function loadWidgets() {
+      const container = document.getElementById('dashboard');
+      for (const widgetConfig of widgets) {
+        // podpora pro string i objekt
+        const widgetName = widgetConfig.name;
+        const widgetWidth = widgetConfig.width;
+        
+        // načíst widget
+        const res = await fetch(`widgets/${widgetName}.html`);
+        const html = await res.text();
+
+        // vytvořit wrapper pro widget
+        const widgetWrapper = document.createElement('div');
+        widgetWrapper.className = 'widget';
+        
+        // přidat třídu pro šířku, pokud je specifikována
+        if (widgetWidth) {
+          widgetWrapper.classList.add(widgetWidth);
+        }
+        
+        widgetWrapper.innerHTML = html;
+        container.appendChild(widgetWrapper);
+        
+        // spustit skripty z widgetu
+        const scripts = widgetWrapper.querySelectorAll('script');
+        scripts.forEach(oldScript => {
+          const newScript = document.createElement('script');
+          newScript.textContent = oldScript.textContent;
+          oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+      }
+    }
+    loadWidgets();
+  </script>
+</body>
+</html>
