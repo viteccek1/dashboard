@@ -1,0 +1,25 @@
+<div class="clock">
+<span id="clock-time"></span>
+
+
+<script>
+(function() {
+const timer = document.getElementById('clock-time');
+function update() {
+timer.textContent = new Date().toLocaleTimeString('cs-CZ');
+}
+update();
+setInterval(update, 1000);
+})();
+</script>
+</div>
+
+<style>
+.clock {
+display: flex;
+justify-content: center;
+align-items: center;
+font-size: 20px;
+font-weight: bold;
+}
+</style>
