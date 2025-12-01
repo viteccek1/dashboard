@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Widget</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .weather-widget {
+            text-align: center;
+            padding: 15px;
+            height: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .weather-city {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .weather-temp {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #2c3e50;
+        }
+        
+        .weather-desc {
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+        
+        .loading {
+            color: #95a5a6;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-widget">
+        <div class="weather-city">Načítám...</div>
+        <div class="weather-temp" id="weather-temp">--°C</div>
+        <div class="weather-desc" id="weather-desc">Načítám...</div>
+    </div>
+
+    <script>
+        (function () {
+            const tempEl = document.getElementById('weather-temp');
+            const descEl = document.getElementById('weather-desc');
+            const cityEl = document.querySelector('.weather-city');
+            
+            // Souřadnice pro Uherské Hradiště
+            const lat = 49.0697;
+            const long = 17.4597;
+            
+            // Získání počasí
+            const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&current_weather=true&timezone=auto`;
+            
+            // Získání názvu města
+            const geoUrl = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${long}&localityLanguage=cs`;
+            
+            // Funkce pro získání popisu počasí
+            function getWeatherDescription(code) {
+                if (code === 0) return 'Jasno';
+                if (code >= 1 && code <= 3) return 'Polojasno';
+                if (code >= 45 && code <= 48) return 'Mlha';
+                if (code >= 51 && code <= 67) return 'Déšť';
+                if (code >= 71 && code <= 77) return 'Sníh';
+                if (code >= 80 && code <= 82) return 'Přeháňky';
+                if (code >= 85 && code <= 86) return 'Sněhové přeháňky';
+                if (code >= 95) return 'Bouřka';
+                return 'Zataženo';
+            }
+            
+            // Načtení dat o počasí
+            fetch(weatherUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const temp = data.current_weather.temperature;
+                    const code = data.current_weather.weathercode;
+                    tempEl.textContent = `${temp}°C`;
+                    descEl.textContent = getWeatherDescription(code);
+                })
+                .catch(error => {
+                    console.error('Chyba při načítání počasí:', error);
+                    descEl.textContent = 'Chyba načítání';
+                });
+            
+            // Načtení názvu města
+            fetch(geoUrl)
+                .then(response => response.json())
+                .then(data => {
+                    cityEl.textContent = data.city || data.locality || 'Neznámé místo';
+                })
+                .catch(error => {
+                    console.error('Chyba při načítání města:', error);
+                    cityEl.textContent = 'Neznámé místo';
+                });
+        })();
+    </script>
+</body>
+</html>
