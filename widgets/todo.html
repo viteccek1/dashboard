@@ -1,0 +1,88 @@
+<div class="todo-widget" x-data="todoWidget()">
+    <h3>Úkoly</h3>
+    <div class="input-group">
+        <input type="text" x-model="newTodo" @keyup.enter="add()" placeholder="Nový úkol...">
+        <button @click="add()">+</button>
+    </div>
+     <ul>
+        <template x-for="todo in todos" :key="todo.id">
+            <li :class="{ 'completed': todo.completed }">
+                <div class="todo-item-content">
+                    <input type="checkbox" x-model="todo.completed">
+                    <span x-text="todo.text"></span>
+                </div>
+                <button @click="remove(todo.id)" class="delete-btn">&times;</button>
+            </li>
+        </template>
+    </ul>
+<script>
+    function todoWidget() {
+        return {
+            newTodo: '',
+            todos: JSON.parse(localStorage.getItem('todos') || '[]'),
+            init() {
+                this.$watch('todos', (value) => {
+                    localStorage.setItem('todos', JSON.stringify(value));
+                });
+            },
+             add() {
+                if (this.newTodo.trim() === '') return;
+                this.todos.push({
+                    id: Date.now(),
+                    text: this.newTodo,
+                    completed: false
+                });
+                this.newTodo = '';
+            },
+              remove(id) {
+                this.todos = this.todos.filter(todo => todo.id !== id);
+            }
+
+        }
+    }
+
+</script>
+
+<style>
+    .input-group,
+    .todo-widget li,
+    .todo-item-content {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .todo-widget li {
+        padding: 10px;
+        border: 1px solid #aaa;
+        margin-bottom: 5px;
+        display: flex;
+        justify-content: space-between;
+        box-shadow: 1px 1px 10px rgba(0,0,0,.2);
+    }
+    .todo-widget ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    .completed span {
+        text-decoration: line-through;
+    }
+
+    .todo-widget button {
+        cursor: pointer;
+        padding: 5px 10px;
+        background-color: tomato;
+        color: white;
+        border: none;
+    }
+
+    .input-group input {
+        padding: 5px 10px;
+        width: 90%;
+    }
+    .input-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+</style>
