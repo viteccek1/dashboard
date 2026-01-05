@@ -1,0 +1,360 @@
+<div id="habit-widget" class="habit-tracker">
+  <header class="habit-header">
+    <h3>Mini Habit Tracker</h3>
+    <div class="habit-icon">🎯</div>
+  </header>
+
+  <div class="habit-controls">
+    <div class="form-group">
+      <label for="habit-select">Vyber zvyk</label>
+      <select id="habit-select" class="modern-select">
+        <option value="Pít vodu">💧 Pít 2 litry vody denně</option>
+        <option value="Cvičit">💪 Cvičit</option>
+        <option value="Meditovat">🧘 Meditovat</option>
+        <option value="Číst knihu">📚 Číst knihu</option>
+        <option value="Spát 8+ hodin">😴 Spát 8+ hodin</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="habit-duration">Cílové období</label>
+      <select id="habit-duration" class="modern-select">
+        <option value="3">3 dny</option>
+        <option value="7" selected>1 týden</option>
+        <option value="14">2 týdny</option>
+        <option value="21">21 dní</option>
+        <option value="30">1 měsíc</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="habit-action">
+    <button id="habit-button" class="habit-complete-btn">
+      <span class="btn-icon">✓</span>
+      <span class="btn-text">Dnes splněno</span>
+    </button>
+  </div>
+
+  <div class="habit-progress-section">
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div id="habit-progress" class="progress-fill"></div>
+      </div>
+      <div class="progress-percentage" id="progress-percentage">0%</div>
+    </div>
+    <p id="habit-text" class="habit-status"></p>
+  </div>
+
+  <div class="habit-footer">
+    <button id="habit-reset" class="reset-btn">
+      <span class="reset-icon">↺</span>
+      Resetovat
+    </button>
+  </div>
+</div>
+
+<style>
+.habit-tracker {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  max-width: 350px;
+  margin: 0 auto;
+}
+
+.habit-tracker:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.habit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.habit-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.habit-icon {
+  font-size: 1.5rem;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-5px);
+  }
+  60% {
+    transform: translateY(-3px);
+  }
+}
+
+.habit-controls {
+  margin-bottom: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #555;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.modern-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e1e8ed;
+  border-radius: 8px;
+  background: white;
+  font-size: 0.95rem;
+  color: #2c3e50;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.modern-select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.habit-action {
+  margin-bottom: 1.5rem;
+}
+
+.habit-complete-btn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 6px rgba(46, 204, 113, 0.2);
+}
+
+.habit-complete-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(46, 204, 113, 0.3);
+  background: linear-gradient(135deg, #229954, #27ae60);
+}
+
+.habit-complete-btn:active {
+  transform: translateY(0);
+}
+
+.habit-complete-btn:disabled {
+  background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-icon {
+  font-size: 1.2rem;
+}
+
+.habit-progress-section {
+  margin-bottom: 1.5rem;
+}
+
+.progress-container {
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  height: 12px;
+  background: #ecf0f1;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3498db, #2980b9);
+  border-radius: 6px;
+  transition: width 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.progress-percentage {
+  text-align: center;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.habit-status {
+  text-align: center;
+  color: #555;
+  font-size: 0.95rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.habit-footer {
+  text-align: center;
+}
+
+.reset-btn {
+  padding: 0.75rem 1.5rem;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.reset-btn:hover {
+  background: #c0392b;
+  transform: translateY(-1px);
+}
+
+.reset-icon {
+  font-size: 1rem;
+}
+
+@media (max-width: 480px) {
+  .habit-tracker {
+    padding: 1rem;
+  }
+  
+  .habit-header h3 {
+    font-size: 1.1rem;
+  }
+  
+  .habit-complete-btn {
+    padding: 0.875rem;
+    font-size: 0.95rem;
+  }
+}
+</style>
+
+<script>
+  const habitSelect = document.getElementById('habit-select');
+  const durationSelect = document.getElementById('habit-duration');
+  const button = document.getElementById('habit-button');
+  const progress = document.getElementById('habit-progress');
+  const text = document.getElementById('habit-text');
+  const reset = document.getElementById('habit-reset');
+  const progressPercentage = document.getElementById('progress-percentage');
+
+  // Načtení stavu z localStorage
+  let habitData = JSON.parse(localStorage.getItem('habitData')) || {
+    habit: 'Pít vodu',
+    duration: 7,
+    days: 0
+  };
+
+  function updateWidget() {
+    const percent = Math.min((habitData.days / habitData.duration) * 100, 100);
+    progress.style.width = percent + '%';
+    progressPercentage.textContent = Math.round(percent) + '%';
+    
+    text.textContent = `${habitData.habit}: ${habitData.days}/${habitData.duration} dní`;
+    
+    if(percent >= 100) {
+      text.textContent += " – 🎉 Skvěle! Cíl dosažen!";
+      button.disabled = true;
+      button.querySelector('.btn-text').textContent = 'Cíl splněn!';
+      button.querySelector('.btn-icon').textContent = '🏆';
+    } else {
+      button.disabled = false;
+      button.querySelector('.btn-text').textContent = 'Dnes splněno';
+      button.querySelector('.btn-icon').textContent = '✓';
+    }
+    
+    habitSelect.value = habitData.habit;
+    durationSelect.value = habitData.duration;
+  }
+
+  button.addEventListener('click', () => {
+    if(habitData.days < habitData.duration) {
+      habitData.days += 1;
+      localStorage.setItem('habitData', JSON.stringify(habitData));
+      updateWidget();
+    }
+  });
+
+  reset.addEventListener('click', () => {
+    habitData.days = 0;
+    localStorage.setItem('habitData', JSON.stringify(habitData));
+    updateWidget();
+  });
+
+  habitSelect.addEventListener('change', () => {
+    habitData.habit = habitSelect.value;
+    habitData.days = 0;
+    localStorage.setItem('habitData', JSON.stringify(habitData));
+    updateWidget();
+  });
+
+  durationSelect.addEventListener('change', () => {
+    habitData.duration = parseInt(durationSelect.value);
+    habitData.days = 0;
+    localStorage.setItem('habitData', JSON.stringify(habitData));
+    updateWidget();
+  });
+
+  updateWidget();
+</script>
