@@ -1,0 +1,105 @@
+<div id="mt-modern">
+<div class="mt-header">
+<h2>Jak se dnes cítíš?</h2>
+<p class="mt-subtitle">Zaznamenej svou náladu</p>
+</div>
+
+<div class="mt-moods" id="mt-moods"></div>
+
+<div class="mt-section">
+<h3>Historie</h3>
+<div class="mt-history" id="mt-history"></div>
+</div>
+</div>
+
+<style>
+#mt-modern{--primary:#2eafaf;--light:#e8f8f8;--border:#ddd;font-family:inherit}
+.mt-header{text-align:center;margin-bottom:2rem;background:linear-gradient(135deg,var(--primary),#1a8d8d);color:#fff;padding:2rem;border-radius:12px;box-shadow:0 8px 20px rgba(46,175,175,.15)}
+.mt-header h2{margin:0;font-size:24px;font-weight:700;letter-spacing:.5px}
+.mt-subtitle{margin:.5rem 0 0;font-size:13px;opacity:.9}
+.mt-moods{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-bottom:2.5rem}
+.mt-btn{background:#fff;border:2px solid var(--border);padding:1rem;border-radius:10px;cursor:pointer;font-size:36px;transition:all .25s cubic-bezier(.4,.0,.2,1);box-shadow:0 2px 8px rgba(0,0,0,.08);position:relative;overflow:hidden}
+.mt-btn::before{content:'';position:absolute;inset:0;background:radial-gradient(circle,rgba(46,175,175,.1),transparent);opacity:0;transition:.3s}
+.mt-btn:hover{border-color:var(--primary);transform:translateY(-4px);box-shadow:0 8px 16px rgba(46,175,175,.2)}
+.mt-btn:hover::before{opacity:1}
+.mt-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 8px 20px rgba(46,175,175,.3);transform:scale(1.05)}
+.mt-section{margin-top:2rem}
+.mt-section h3{color:var(--primary);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:2px solid var(--light)}
+.mt-history{display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem}
+.mt-day{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:.6rem .4rem;background:#fafbfc;border-radius:8px;cursor:pointer;transition:all .2s;border-left:4px solid transparent;position:relative;text-align:center;font-size:11px;min-height:70px}
+.mt-day:hover{background:var(--light);transform:translateX(4px);box-shadow:0 2px 6px rgba(46,175,175,.1)}
+.mt-day.active{background:var(--light);border-left-color:var(--primary);font-weight:600}
+.mt-dname{color:#555;font-size:13px;font-weight:500}
+.mt-demoji{font-size:22px;transition:transform .2s}
+.mt-day:hover .mt-demoji{transform:scale(1.2)}
+@media(max-width:600px){.mt-moods{grid-template-columns:repeat(5,1fr);gap:.75rem}.mt-btn{padding:.8rem;font-size:28px}.mt-header{padding:1.5rem}.mt-header h2{font-size:20px}}
+</style>
+
+<script>
+(()=>{
+const root=document.getElementById('mt-modern');
+const moodsContainer=document.getElementById('mt-moods');
+const historyContainer=document.getElementById('mt-history');
+const key='moodTrackerData';
+const data=JSON.parse(localStorage.getItem(key)||'{}');
+const moods=['😄','🙂','😐','😕','😡'];
+const moodLabels=['Úžasně','Dobře','Průměrně','Špatně','Hrozně'];
+
+const toDateStr=d=>d.toISOString().split('T')[0];
+const toLabel=d=>{
+const days=['Ne','Po','Út','St','Čt','Pá','So'];
+return days[d.getDay()]+' '+d.getDate()+'.'+(d.getMonth()+1)+'.';
+};
+
+const updateButtons=()=>{
+const today=toDateStr(new Date());
+moods.forEach((m,i)=>{
+const btn=moodsContainer.querySelector(`[data-mood="${m}"]`);
+btn.classList.toggle('active',data[today]===m);
+});
+};
+
+const renderHistory=()=>{
+historyContainer.innerHTML='';
+for(let i=6;i>=0;i--){
+const date=new Date();
+date.setDate(date.getDate()-i);
+const dateStr=toDateStr(date);
+const mood=data[dateStr];
+const isToday=dateStr===toDateStr(new Date());
+
+const dayEl=document.createElement('div');
+dayEl.className='mt-day'+(isToday?' active':'');
+dayEl.innerHTML=`<span class="mt-dname">${toLabel(date)}</span><span class="mt-demoji">${mood||'-'}</span>`;
+
+dayEl.addEventListener('click',()=>{
+moods.forEach(m=>moodsContainer.querySelector(`[data-mood="${m}"]`).classList.remove('active'));
+if(mood){
+const btn=moodsContainer.querySelector(`[data-mood="${mood}"]`);
+if(btn)btn.classList.add('active');
+}
+document.querySelectorAll('#mt-history .mt-day').forEach(el=>el.classList.remove('active'));
+dayEl.classList.add('active');
+root._editDate=dateStr;
+});
+
+historyContainer.appendChild(dayEl);
+}
+};
+
+moodsContainer.innerHTML=moods.map((m,i)=>`<button class="mt-btn" data-mood="${m}" title="${moodLabels[i]}">${m}</button>`).join('');
+
+moodsContainer.addEventListener('click',e=>{
+if(e.target.classList.contains('mt-btn')){
+const dateStr=root._editDate||toDateStr(new Date());
+data[dateStr]=e.target.dataset.mood;
+localStorage.setItem(key,JSON.stringify(data));
+updateButtons();
+renderHistory();
+}
+});
+
+updateButtons();
+renderHistory();
+})();
+</script>
