@@ -1,0 +1,62 @@
+<!-- Kontejner pro přepínač motivů -->
+<div class="theme-switcher">
+    <!-- Tlačítka pro přepínání. Každé má atribut data-theme pro identifikaci -->
+    <button onclick="switchTheme('light')" class="theme-btn" data-theme="light">Světlé</button>
+    <button onclick="switchTheme('dark')" class="theme-btn" data-theme="dark">Tmavé</button>
+    <button onclick="switchTheme('blue')" class="theme-btn" data-theme="blue">Modré</button>
+    <button onclick="switchTheme('cyberpunk')" class="theme-btn" data-theme="cyberpunk">Cyberpunk</button>
+</div>
+
+<style>
+    .theme-switcher {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        padding: 0.5rem;
+    }
+
+    .theme-btn {
+        background: none;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        color: var(--text-color);
+        transition: all 0.2s;
+    }
+
+    .theme-btn:hover,
+    .theme-btn.active {
+        opacity: 1;
+        font-weight: bold;
+        text-decoration: underline;
+    }
+</style>
+
+<script>
+    // Funkce pro změnu motivu - definujeme ji na objektu window, aby byla globálně dostupná
+    window.switchTheme = function (theme) {
+        // 1. Změníme cestu k CSS souboru a uložíme volbu
+        const themeLink = document.getElementById('theme-style');
+        if (themeLink) {
+            themeLink.href = `themes/${theme}.css`;
+            localStorage.setItem('selectedTheme', theme);
+        }
+
+        // 2. Zvýrazníme aktivní tlačítko
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            // Metoda toggle přidá třídu 'active', pokud je podmínka pravdivá
+            btn.classList.toggle('active', btn.dataset.theme === theme);
+        });
+    };
+
+    // Inicializace: načteme uložený motiv a aplikujeme ho
+    // Kód zabalíme do funkce (IIFE), abychom nekolidovali s globálními proměnnými
+    (function () {
+        const savedTheme = localStorage.getItem('selectedTheme') || 'light';
+
+        // Pro jistotu zkontrolujeme, zda funkce existuje
+        if (typeof window.switchTheme === 'function') {
+            window.switchTheme(savedTheme);
+        }
+    })();
+</script>
