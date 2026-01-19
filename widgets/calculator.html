@@ -1,10 +1,9 @@
 <div class="simple-calc">
-    <!-- Displej pro zobrazení čísel -->
+   
     <input type="text" id="calc-input">
 
-    <!-- Kontejner pro tlačítka -->
     <div class="buttons">
-        <!-- Číselná tlačítka -->
+       
         <button onclick="calcAppend('7')">7</button>
         <button onclick="calcAppend('8')">8</button>
         <button onclick="calcAppend('9')">9</button>
@@ -25,19 +24,19 @@
         <button onclick="calcResult()" class="op">=</button>
         <button onclick="calcAppend('+')" class="op">+</button>
 
-        <!-- Tlačítko C přes celou šířku -->
+     
         <button onclick="calcClear()" class="clear">C</button>
     </div>
 </div>
 
 <script>
-    // Přidání znaku na displej
+    
     window.calcAppend = function (val) {
         const input = document.getElementById('calc-input');
         input.value += val;
     };
 
-    // Výpočet výsledku pomocí eval()
+   
     window.calcResult = function () {
         try {
             const input = document.getElementById('calc-input');
@@ -48,7 +47,7 @@
         }
     };
 
-    // Vymazání displeje
+    
     window.calcClear = function () {
         document.getElementById('calc-input').value = '';
     };
@@ -62,7 +61,7 @@
         max-width: 220px;
         padding: 8px;
         border-radius: 8px;
-        background: #ffffff;
+        background: var(--body-bg);
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
             sans-serif;
